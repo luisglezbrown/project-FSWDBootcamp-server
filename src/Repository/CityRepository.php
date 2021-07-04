@@ -35,7 +35,7 @@ class CityRepository extends ServiceEntityRepository
 
     /**
     * 
-    * @return City[] Returns an array of 8 City objects ordered by ranking
+    * @return City[] Returns an array of all City objects ordered by name
     */ 
     public function findAllOrderedByName()
     {
