@@ -13,7 +13,7 @@ use App\Repository\UserRepository;
 use App\Repository\TourRepository;
 use App\Service\GuideNormalize;
 use App\Service\TourNormalize;
-
+use DateTimeImmutable;
 
 /**
  * @Route("/api", name="api_user_")
@@ -44,10 +44,11 @@ class ApiUserController extends AbstractController
         $user->setName($data['name']);
         $user->setLastname($data['lastname']);
         $user->setPhone($data['phone']);
-        $user->setRole('user');
-        $user->setDescription('test');
-        $user->setShortDesc('test');
-
+        $user->setRole('ROLE_USER');
+        $user->setShortDesc('n/a');
+        $user->setDescription('n/a');
+        //$user->setSince(DateTimeImmutable::__construct());
+        $user->setSince(new \DateTimeImmutable());
         dump($user);
 
 
