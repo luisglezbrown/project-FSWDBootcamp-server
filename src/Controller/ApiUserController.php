@@ -13,7 +13,8 @@ use App\Repository\UserRepository;
 use App\Repository\TourRepository;
 use App\Service\GuideNormalize;
 use App\Service\TourNormalize;
-use DateTimeImmutable;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 /**
  * @Route("/api", name="api_user_")
@@ -22,8 +23,8 @@ class ApiUserController extends AbstractController
 {
     /**
     * @Route(
-    *   "/newuser", 
-    *   name="newUser",
+    *   "/register", 
+    *   name="register",
     *   methods={"POST"}
     *)
     */
@@ -31,6 +32,7 @@ class ApiUserController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator, 
+        GuideNormalize $guideNormalize
     ): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -44,10 +46,9 @@ class ApiUserController extends AbstractController
         $user->setName($data['name']);
         $user->setLastname($data['lastname']);
         $user->setPhone($data['phone']);
-        $user->setRole('ROLE_USER');
-        $user->setShortDesc('n/a');
-        $user->setDescription('n/a');
-        //$user->setSince(DateTimeImmutable::__construct());
+        $user->setRoles($data['role']);
+        $user->setShortDesc($data['shortDesc']);
+        $user->setDescription($data['description']);
         $user->setSince(new \DateTimeImmutable());
         dump($user);
 
@@ -77,8 +78,53 @@ class ApiUserController extends AbstractController
 
 
         return $this->json(
-            Response::HTTP_CREATED,
-            201
+            $guideNormalize->guideNormalize($user),
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
+    * @Route(
+    *      "/updateimage/{id}",
+    *      name="updateIimage",
+    *      methods={"POST"},
+    *      requirements={
+    *          "id": "\d+"
+    *      }     
+    * )
+    */
+    public function updateImage(
+        User $user, 
+        Request $request, 
+        EntityManagerInterface $entityManager):Response {
+        // dump($request->request);
+        // dump($request->files);
+        // dump($user);
+        // die();
+
+        if($request->files->has('File')) {
+            $avatarFile = $request->files->get('File');
+
+            $newFilename = uniqid().'.'.$avatarFile->guessExtension();
+
+            // Intentamos mover el fichero a la carpeta public
+            try {
+                $avatarFile->move(
+                    $request->server->get('DOCUMENT_ROOT') . DIRECTORY_SEPARATOR . 'guides', // El primer parámetro es la ruta
+                    $newFilename // El 2º param es el nombre del fichero
+                );
+            } catch (FileException $error) {
+                throw new \Exception($error->getMessage());
+            }
+
+            $user->setImgpath($newFilename);
+        }
+
+        $entityManager->flush();
+        
+        return $this->json(
+            null,
+            Response::HTTP_NO_CONTENT
         );
     }
 
