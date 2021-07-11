@@ -85,15 +85,15 @@ class ApiUserController extends AbstractController
 
     /**
     * @Route(
-    *      "/updateimage/{id}",
-    *      name="updateIimage",
+    *      "/uploadguideimage/{id}",
+    *      name="uploadguideimage",
     *      methods={"POST"},
     *      requirements={
     *          "id": "\d+"
     *      }     
     * )
     */
-    public function updateImage(
+    public function uploadGuideImage(
         User $user, 
         Request $request, 
         EntityManagerInterface $entityManager):Response {
