@@ -14,7 +14,8 @@ use App\Repository\TourRepository;
 use App\Service\GuideNormalize;
 use App\Service\TourNormalize;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 /**
  * @Route("/api", name="api_user_")
@@ -30,6 +31,7 @@ class ApiUserController extends AbstractController
     */
     public function newUser(
         Request $request,
+        UserPasswordHasherInterface $hasher,
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator, 
         GuideNormalize $guideNormalize
@@ -38,11 +40,15 @@ class ApiUserController extends AbstractController
         $data = json_decode($request->getContent(), true);
         dump($data);
 
+
         //Creamos un nuevo objeto para enviar en la solicitud
         $user = new User();
 
+        $unhashedPassword = $data['password'];
+        $hashedPassword = $hasher->hashPassword($user, $unhashedPassword);
+
         $user->setEmail($data['email']);
-        $user->setPassword($data['password']);
+        $user->setPassword($hashedPassword);
         $user->setName($data['name']);
         $user->setLastname($data['lastname']);
         $user->setPhone($data['phone']);
