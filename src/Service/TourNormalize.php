@@ -26,14 +26,12 @@ class TourNormalize {
         //     ]);
         // }
 
-        // $cityInfo = [];
+        $categories = [];
 
-        // foreach($tour->getCity() as $city) {
-        //     array_push($cityInfo, [
-        //         'id' => $city->getId(),
-        //         'name' => $city->getName()
-        //     ]);
-        // }
+        foreach($tour->getCategories() as $category) {
+            array_push($categories, ["id" => $category->getId(), "tag" => $category->getTag()]);
+        }
+
         
         $guide = $tour->getUser();
         $city = $tour->getCity();
@@ -45,7 +43,7 @@ class TourNormalize {
             'weekDays' => $tour->getWeekDays(),
             'startingTime' => $tour->getStartingTime(),
             'meetingPoint' => $tour->getMeetingPoint(),
-            'categories' => $tour->getCategories(),
+            'categories' => $categories,
             'imgpath' => $tour->getImgpath(),
             'highlight' => $tour->getHighlight(),
             'description' => $tour->getDescription(),
