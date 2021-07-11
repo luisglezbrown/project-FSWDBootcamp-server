@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TourRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -45,11 +47,6 @@ class Tour
     private $weekDays = [];
 
     /**
-     * @ORM\Column(type="simple_array")
-     */
-    private $categories = [];
-
-    /**
      * @ORM\Column(type="string", length=128)
      */
     private $highlight;
@@ -78,6 +75,16 @@ class Tour
      * @ORM\Column(type="integer", nullable=true)
      */
     private $ranking;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Category::class)
+     */
+    private $categories;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -140,18 +147,6 @@ class Tour
     public function setWeekDays(array $weekDays): self
     {
         $this->weekDays = $weekDays;
-
-        return $this;
-    }
-
-    public function getCategories(): ?array
-    {
-        return $this->categories;
-    }
-
-    public function setCategories(array $categories): self
-    {
-        $this->categories = $categories;
 
         return $this;
     }
@@ -224,6 +219,30 @@ class Tour
     public function setRanking(?int $ranking): self
     {
         $this->ranking = $ranking;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }
