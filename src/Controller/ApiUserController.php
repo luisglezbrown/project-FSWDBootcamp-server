@@ -15,6 +15,7 @@ use App\Service\GuideNormalize;
 use App\Service\TourNormalize;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 
 /**
@@ -90,6 +91,22 @@ class ApiUserController extends AbstractController
     }
 
     /**
+     * @Route(
+     *      "/me",
+     *      name="current_user_info",
+     *      methods={"GET"},
+     *  )
+     *  @IsGranted("ROLE_USER")
+     */
+
+    public function me(GuideNormalize $userNormalizer): Response
+    {
+        return $this->json(
+            $userNormalizer->guideNormalize($this->getUser())
+        );
+    }
+
+    /**
     * @Route(
     *      "/uploadguideimage/{id}",
     *      name="uploadguideimage",
@@ -116,7 +133,7 @@ class ApiUserController extends AbstractController
             // Intentamos mover el fichero a la carpeta public
             try {
                 $avatarFile->move(
-                    $request->server->get('DOCUMENT_ROOT') . DIRECTORY_SEPARATOR . 'guides', // El primer parámetro es la ruta
+                    $request->server->get('DOCUMENT_ROOT') . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'guides', // El primer parámetro es la ruta
                     $newFilename // El 2º param es el nombre del fichero
                 );
             } catch (FileException $error) {
