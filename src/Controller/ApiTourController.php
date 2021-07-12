@@ -163,7 +163,7 @@ class ApiTourController extends AbstractController
             // Intentamos mover el fichero a la carpeta public
             try {
                 $tourImgFile->move(
-                    $request->server->get('DOCUMENT_ROOT') . DIRECTORY_SEPARATOR . 'tours', // El primer parámetro es la ruta
+                    $request->server->get('DOCUMENT_ROOT') . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'tours', // El primer parámetro es la ruta
                     $newFilename // El 2º param es el nombre del fichero
                 );
             } catch (FileException $error) {
