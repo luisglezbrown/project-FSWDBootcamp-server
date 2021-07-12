@@ -10,6 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Booking
 {
+    const STATUS_ACTIVE = 'active';
+    const STATUS_CANCELLED = 'cancelled';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -43,6 +46,14 @@ class Booking
      * @ORM\Column(type="string", length=8)
      */
     private $status;
+
+    //TODO private $locator;
+
+    public function __construct()
+    {
+        $this->status = self::STATUS_ACTIVE;
+        //TODO $this->locator = 'sada23423';
+    }
 
     public function getId(): ?int
     {
