@@ -124,6 +124,47 @@ class ApiBookingController extends AbstractController
         return $this->json($results);
     }
 
+        /**
+     * @Route(
+     *      "/bookingsbytour/{id}",
+     *      name="bookingsByTour",
+     *      methods={"GET"},
+     *      requirements={
+     *          "id": "\d+"
+     *      }     
+     * )
+    */
+    public function bookingsByTour(
+        int $id, 
+        BookingRepository $bookingRepository): Response
+    {
+        $activeBookings = [];
+        $cancelledBookings = [];
+        foreach($bookingRepository->findBookingsByTour($id) as $booking) {
+            $bookingDetails = [
+                'id' => $booking->getId(),
+                'date' => $booking->getDate(),
+                'pax' => $booking->getPax(),
+                'clientName' => $booking->getUser()->getName(),
+            ];
+            if ($booking->getStatus() === Booking::STATUS_ACTIVE) {
+                array_push($activeBookings, $bookingDetails);
+            } elseif ($booking->getStatus() === Booking::STATUS_CANCELLED) {
+                array_push($cancelledBookings, $bookingDetails);
+            }
+        };
+
+        $results = [
+            "totalActiveBookings" => count($activeBookings),
+            "totalCancelledBookings" => count($cancelledBookings),
+            "active" => $activeBookings,
+            "cancelled" => $cancelledBookings,
+        ];
+
+        return $this->json($results);
+    }
+
+
 
     /**
      * @Route(
