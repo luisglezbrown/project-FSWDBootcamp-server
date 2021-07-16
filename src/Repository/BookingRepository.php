@@ -19,6 +19,36 @@ class BookingRepository extends ServiceEntityRepository
         parent::__construct($registry, Booking::class);
     }
 
+
+    /**
+    * @return Booking[]|null Returns an array of Booking objects
+    */
+    public function findBookingsByUser($id)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.user = :id')
+            ->setParameter('id', $id)
+            ->orderBy('b.date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+    * @return Booking[]|null Returns an array of Booking objects
+    */
+    public function findBookingsByTour($id)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.tour = :id')
+            ->setParameter('id', $id)
+            ->orderBy('b.date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
     // /**
     //  * @return Booking[] Returns an array of Booking objects
     //  */
