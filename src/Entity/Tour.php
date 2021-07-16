@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Tour
 {
+
+    const STATUS_ENABLED = 'enabled';
+    const STATUS_INACTIVE = 'inactive';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -81,9 +85,15 @@ class Tour
      */
     private $categories;
 
+    /**
+     * @ORM\Column(type="string", length=8, nullable=false)
+     */
+    private $status;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->status = self::STATUS_ENABLED;
     }
 
     public function getId(): ?int
@@ -243,6 +253,18 @@ class Tour
     public function removeCategory(Category $category): self
     {
         $this->categories->removeElement($category);
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
