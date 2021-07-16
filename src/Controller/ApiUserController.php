@@ -13,6 +13,7 @@ use App\Repository\UserRepository;
 use App\Repository\TourRepository;
 use App\Service\GuideNormalize;
 use App\Service\TourNormalize;
+use App\Service\UserNormalize;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -91,6 +92,48 @@ class ApiUserController extends AbstractController
     }
 
     /**
+    * @Route(
+    *    "/userupdate/{id}", 
+    *    name="userUpdate",
+    *    methods={"PUT"},
+    *    requirements={
+    *       "id": "\d+"
+    *    }
+    *)
+    */        
+    public function userUpdate(
+        User $user, 
+        Request $request, 
+        UserRepository $userRepository, 
+        EntityManagerInterface $entityManager, 
+        UserPasswordHasherInterface $hasher
+    ): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        dump($data);
+
+
+        $userId = $this->getUser()->getId();
+        $user = $userRepository->find($userId);
+
+        // $unhashedPassword = $data['password'];
+        // $hashedPassword = $hasher->hashPassword($unhashedPassword);
+
+        $user->setEmail($data['email']);
+        // $user->setPassword($hashedPassword);
+        $user->setName($data['name']);
+        $user->setLastname($data['lastname']);
+        $user->setPhone($data['phone']);
+        $user->setShortDesc($data['shortDesc']);
+        $user->setDescription($data['description']);
+
+        $entityManager->flush();
+
+        return $this->json($user, Response::HTTP_ACCEPTED);
+    }
+
+
+    /**
      * @Route(
      *      "/me",
      *      name="current_user_info",
@@ -98,11 +141,26 @@ class ApiUserController extends AbstractController
      *  )
      *  @IsGranted("ROLE_USER")
      */
-
-    public function me(GuideNormalize $userNormalizer): Response
+    public function me(UserNormalize $userNormalizer): Response
     {
         return $this->json(
-            $userNormalizer->guideNormalize($this->getUser())
+            $userNormalizer->userNormalize($this->getUser())
+        );
+    }
+
+    /**
+     * @Route(
+     *      "/token_check",
+     *      name="token_check",
+     *  )
+     *  @IsGranted("ROLE_USER")
+     */
+
+    public function auth_token(): Response
+    {
+        return $this->json(
+            null,
+            Response::HTTP_ACCEPTED
         );
     }
 
