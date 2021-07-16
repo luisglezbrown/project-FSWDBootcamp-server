@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Booking;
+use App\Repository\BookingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,7 +46,7 @@ class ApiBookingController extends AbstractController
         $booking->setTour($tour);
         $booking->setPax($data['pax']);
         $booking->setDate($date);
-        $booking->setStatus($data['status']);
+        //$booking->setStatus($data['status']);
 
         // validar el tour
         $errors = $validator->validate($booking);
@@ -76,5 +77,75 @@ class ApiBookingController extends AbstractController
             $bookingNormalize->bookingNormalize($booking),
             Response::HTTP_CREATED
         );
+    }
+
+    /**
+     * @Route(
+     *      "/bookingsperuser/{id}",
+     *      name="bookingsPerUser",
+     *      methods={"GET"},
+     *      requirements={
+     *          "id": "\d+"
+     *      }     
+     * )
+    */
+    public function bookingsPerUser(
+        int $id, 
+        UserRepository $userRepository,
+        BookingRepository $bookingRepository): Response
+    {
+        $activeBookings = [];
+        $cancelledBookings = [];
+        foreach($bookingRepository->findBookingsByUser($id) as $booking) {
+            $bookingDetails = [
+                'id' => $booking->getId(),
+                'date' => $booking->getDate(),
+                'pax' => $booking->getPax(),
+                'tourId' => $booking->getTour()->getId(),
+                'city' => $booking->getTour()->getCity()->getName(),
+                'tourTitle' => $booking->getTour()->getTitle(),
+                'startingTime' => $booking->getTour()->getStartingTime(),
+            ];
+            if ($booking->getStatus() === Booking::STATUS_ACTIVE) {
+                array_push($activeBookings, $bookingDetails);
+            } elseif ($booking->getStatus() === Booking::STATUS_CANCELLED) {
+                array_push($cancelledBookings, $bookingDetails);
+            }
+        };
+
+        $user = $userRepository->find($id);
+        $results = [
+            'id' => $user->getId(),
+            "totalBookings" => count($bookingRepository->findBookingsByUser($id)),
+            "active" => $activeBookings,
+            "cancelled" => $cancelledBookings,
+        ];
+
+        return $this->json($results);
+    }
+
+
+    /**
+     * @Route(
+     *      "/cancelbooking/{id}",
+     *      name="cancelBooking",
+     *      methods={"PATCH"},
+     *      requirements={
+     *          "id": "\d+"
+     *      }     
+     * )
+    */
+    public function cancelBooking(
+        int $id,
+        BookingRepository $bookingRepository,
+        EntityManagerInterface $entityManager 
+        ): Response
+    {
+        $booking = $bookingRepository->find($id);
+        $booking->setStatus(Booking::STATUS_CANCELLED);
+        
+        $entityManager->flush();
+
+        return $this->json($booking, Response::HTTP_ACCEPTED);
     }
 };
