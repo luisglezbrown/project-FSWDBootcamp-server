@@ -52,20 +52,25 @@ class ApiTourController extends AbstractController
     public function toursByGuide(
         int $id, 
         TourRepository $tourRepository, 
-        CityRepository $cityRepository, 
         TourNormalize $tourNormalize): Response
     {
         $toursResult = $tourRepository->findToursByGuide($id);
-        $tours = [];
+        $enabledTours = [];
+        $inactiveTours = [];
         foreach($toursResult as $tour) {
-            array_push($tours, $tourNormalize->tourNormalize($tour));
+            if ($tour->getStatus() === Tour::STATUS_ENABLED) {
+                array_push($enabledTours, $tourNormalize->tourNormalize($tour));
+            } elseif ($tour->getStatus() === Tour::STATUS_INACTIVE) {
+                array_push($inactiveTours, $tourNormalize->tourNormalize($tour));
+            }
         };
-
-        $city = $cityRepository->find($id);
 
         $results = [
             "totalTours" => count($tourRepository->findToursByGuide($id)),
-            "tours" => $tours
+            "totalActiveTours" => count($enabledTours),
+            "totalInactiveTours" => count($inactiveTours),
+            "enabled" => $enabledTours,
+            "inactive" => $inactiveTours,
         ];
 
         return $this->json($results);
