@@ -23,19 +23,52 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class ApiTourController extends AbstractController
 {
     /**
-     * @Route(
-     *      "/tourdetails/{id}",
-     *      name="tourDetails",
-     *      methods={"GET"},
-     *      requirements={
-     *          "id": "\d+"
-     *      }     
-     * )
-     */
-    public function index(int $id, TourRepository $tourRepository, TourNormalize $tourNormalize): Response
+    * @Route(
+    *      "/tourdetails/{id}",
+    *      name="tourDetails",
+    *      methods={"GET"},
+    *      requirements={
+    *          "id": "\d+"
+    *      }     
+    * )
+    */
+    public function index(
+        int $id, 
+        TourRepository $tourRepository, 
+        TourNormalize $tourNormalize): Response
     {
         $data = $tourRepository->find($id);
         return $this->json($tourNormalize->tourNormalize($data));
+    }
+
+
+    /**
+    * @Route(
+    *   "/toursbyguide/{id}", 
+    *   name="toursByGuide",
+    *   methods={"GET"}
+    *)
+    */
+    public function toursByGuide(
+        int $id, 
+        TourRepository $tourRepository, 
+        CityRepository $cityRepository, 
+        TourNormalize $tourNormalize): Response
+    {
+        $toursResult = $tourRepository->findToursByGuide($id);
+        $tours = [];
+        foreach($toursResult as $tour) {
+            array_push($tours, $tourNormalize->tourNormalize($tour));
+        };
+
+        $city = $cityRepository->find($id);
+
+        $results = [
+            "totalTours" => count($tourRepository->findToursByGuide($id)),
+            "tours" => $tours
+        ];
+
+        return $this->json($results);
     }
 
     /**
@@ -45,11 +78,19 @@ class ApiTourController extends AbstractController
     *   methods={"GET"}
     *)
     */
-    public function toursbycity(int $id, TourRepository $tourRepository, CityRepository $cityRepository, TourNormalize $tourNormalize): Response
+    public function toursbycity(int $id, Request $request, TourRepository $tourRepository, CityRepository $cityRepository, TourNormalize $tourNormalize): Response
     {
+        // $filters = $request->request; // Esto te da un array asaociativo con todos los parámetros que te llegan en el query string.
 
+        // if ($filters) {
+        //     $toursResult = $tourRepository->findToursByCityAndCriteria($id, ['durattions' => $filters['duration'], 'catgeries' => $filters['categories'] ]);
+        // } else {
+        //     $toursResult = $tourRepository->findToursByCity($id, ['durattions' => $filters['duration'], 'catgeries' => $filters['categories'] ] );
+        // }
+
+        $toursResult = $tourRepository->findToursByCity($id);
         $tours = [];
-        foreach($tourRepository->findToursByCity($id) as $tour) {
+        foreach($toursResult as $tour) {
             array_push($tours, $tourNormalize->tourNormalize($tour));
         };
 
