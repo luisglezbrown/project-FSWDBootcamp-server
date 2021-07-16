@@ -22,7 +22,7 @@ class Booking
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $user;
 
@@ -43,7 +43,7 @@ class Booking
     private $pax;
 
     /**
-     * @ORM\Column(type="string", length=8)
+     * @ORM\Column(type="string", length=9)
      */
     private $status;
 
