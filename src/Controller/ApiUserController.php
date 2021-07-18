@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Booking;
+use App\Entity\Tour;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Entity\User;
+use App\Repository\BookingRepository;
 use App\Repository\UserRepository;
 use App\Repository\TourRepository;
 use App\Service\GuideNormalize;
@@ -112,7 +115,7 @@ class ApiUserController extends AbstractController
         $data = json_decode($request->getContent(), true);
         dump($data);
 
-
+//TODO GESTIONAR EL CAMBIO DE CONTRASEÑAS
         $userId = $this->getUser()->getId();
         $user = $userRepository->find($userId);
 
@@ -261,6 +264,45 @@ class ApiUserController extends AbstractController
         ];
 
         return $this->json($results);
+    }
+  
+    /**
+    * @Route(
+    *    "/deleteuser/{id}", 
+    *    name="deleteuser",
+    *    methods={"DELETE"},
+    *    requirements={
+    *        "id": "\d+"
+    *    }     
+    *)
+    * @IsGranted("ROLE_USER")
+    */
+    public function deleteUser(
+        int $id, 
+        UserRepository $userRepository,
+        BookingRepository $bookingRepository,
+        TourRepository $tourRepository,
+        EntityManagerInterface $entityManager): Response
+    {
+        $user = $userRepository->find($id);
+
+        foreach($bookingRepository->findBookingsByUser($id) as $booking) {
+            $booking->setUser($userRepository->find(1));
+            $booking->setStatus(Booking::STATUS_CANCELLED);
+        };
+
+        foreach($tourRepository->findToursByGuide($id) as $tour) {
+            $tour->setUser($userRepository->find(1));
+            $tour->setStatus(Tour::STATUS_INACTIVE);
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return $this->json(
+            null, 
+            Response::HTTP_OK
+        );
     }
 
 }
