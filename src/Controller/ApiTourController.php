@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Booking;
 use App\Entity\Tour;
+use App\Repository\BookingRepository;
 use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,7 +98,9 @@ class ApiTourController extends AbstractController
         $toursResult = $tourRepository->findToursByCity($id);
         $tours = [];
         foreach($toursResult as $tour) {
-            array_push($tours, $tourNormalize->tourNormalize($tour));
+            if ($tour->getStatus() === Tour::STATUS_ENABLED) {
+                array_push($tours, $tourNormalize->tourNormalize($tour));
+            }
         };
 
         $city = $cityRepository->find($id);
@@ -227,4 +231,89 @@ class ApiTourController extends AbstractController
         );
     }
 
+
+    /**
+    * @Route(
+    *      "/tourupdate/{id}",
+    *      name="updatetourupdateTour",
+    *      methods={"PUT"},
+    *      requirements={
+    *          "id": "\d+"
+    *      }     
+    * )
+    */
+    public function updateTour(
+        int $id,
+        Request $request,
+        TourRepository $tourRepository,
+        CategoryRepository $categoryRepository,
+        EntityManagerInterface $entityManager 
+        ): Response
+    {        
+        $data = json_decode($request->getContent(), true);
+        $tour = $tourRepository->find($id);
+
+        $tour->setTitle($data['title']);
+        $tour->setDuration($data['duration']);
+        $tour->setWeekDays($data['weekDays']);
+        $tour->setHighlight($data['highlight']);
+        $tour->setStartingTime($data['startingTime']);
+        $tour->setMeetingPoint($data['meetingPoint']);
+        $tour->setDescription($data['description']);
+
+        // Primero obtenemos las categorías actuales y las eliminamos una a una
+        $currentCategories = $tour->getCategories();
+        foreach ($currentCategories as $category){
+            $tour->removeCategory($category);
+        }
+
+        // Aquí añadimos cada una de las nuevas categorías
+        foreach ($data['categories'] as $categoryId) {
+            $category = $categoryRepository->find($categoryId);
+            $tour->addCategory($category);
+        }
+    
+        $entityManager->flush();
+
+        return $this->json($tour, Response::HTTP_ACCEPTED);
+    }
+
+
+    /**
+    * @Route(
+    *      "/deletetour/{id}",
+    *      name="disableTour",
+    *      methods={"PATCH"},
+    *      requirements={
+    *          "id": "\d+"
+    *      }     
+    * )
+    */
+    public function deleteTour(
+        int $id,
+        Booking $booking,
+        TourRepository $tourRepository,
+        BookingRepository $bookingRepository,
+        EntityManagerInterface $entityManager 
+        ): Response
+    {
+        $tour = $tourRepository->find($id);
+        $tour->setDuration(0);
+        $tour->setWeekDays([]);
+        $tour->setHighlight("Este tour ha sido eliminado");
+        $tour->setStartingTime("--");
+        $tour->setMeetingPoint("--");
+        $tour->setDescription("El guía ha decidido eliminar este tour, por lo que ya no está disponible");
+        $tour->setImgpath("deleted.jpg");
+        $tour->setStatus(Tour::STATUS_INACTIVE);
+
+        foreach($bookingRepository->findBookingsByTour($id) as $booking) {
+            $booking->setStatus(Booking::STATUS_CANCELLED);
+        };
+        
+        $entityManager->flush();
+
+        return $this->json($tour, Response::HTTP_ACCEPTED);
+    }
+    
 }
