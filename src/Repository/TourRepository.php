@@ -19,6 +19,31 @@ class TourRepository extends ServiceEntityRepository
         parent::__construct($registry, Tour::class);
     }
 
+    // /**
+    //  * @return Tour[]|null Returns an array of Tour objects
+    //  */
+    // public function findToursByCityAndCriteria($id, array $criteria = [])
+    // {
+    //     $qb = $this->createQueryBuilder('t')
+    //         ->andWhere('t.city = :id')
+    //         ->setParameter('id', $id)
+    //         ->orderBy('t.ranking', 'DESC');
+
+    //         if (in_array('duration', $criteria)){
+    //             $qb->andWhere('t.duration => :duration')
+    //             ->setParameter('duration', $criteria['duration']);
+    //         }
+            
+    //         // if (in_array('categories', $criteria)){
+    //         //     $qb->join('t.categories c')
+    //         //     ->andWhere('c.category = :category')
+    //         //     ->setParameter('category', $criteria['category']);
+    //         // }
+
+    //         return $qb->getQuery()
+    //         ->getResult();
+    // }
+
     /**
      * @return Tour[]|null Returns an array of Tour objects
      */
@@ -42,6 +67,8 @@ class TourRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->andWhere('t.user = :id')
             ->setParameter('id', $id)
+            ->andWhere('t.status = :status')
+            ->setParameter('status', 'enabled')
             ->orderBy('t.ranking', 'DESC')
             ->orderBy('t.city', 'ASC')
             ->getQuery()
