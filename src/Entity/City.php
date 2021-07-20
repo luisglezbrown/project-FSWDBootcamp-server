@@ -32,6 +32,11 @@ class City
      */
     private $ranking;
 
+    public function __construct()
+    {
+        $this->ranking = 0;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
