@@ -229,7 +229,7 @@ class ApiUserController extends AbstractController
         TourNormalize $tourNormalize): Response
     {
         $tours = [];
-        foreach($tourRepository->findToursByGuide($id) as $tour) {
+        foreach($tourRepository->findActiveToursByGuide($id) as $tour) {
             array_push($tours, $tourNormalize->tourNormalize($tour));
         };
 
@@ -242,7 +242,7 @@ class ApiUserController extends AbstractController
             'shortDesc' => $guide->getShortDesc(),
             'description' => $guide->getDescription(),
             'imgpath' => $guide->getImgpath(),
-            "totalTours" => count($tourRepository->findToursByGuide($id)),
+            "totalTours" => count($tourRepository->findActiveToursByGuide($id)),
             "tours" => $tours
         ];
 
