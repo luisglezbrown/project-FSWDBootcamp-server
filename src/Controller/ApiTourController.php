@@ -85,7 +85,12 @@ class ApiTourController extends AbstractController
     *   methods={"GET"}
     *)
     */
-    public function toursbycity(int $id, Request $request, TourRepository $tourRepository, CityRepository $cityRepository, TourNormalize $tourNormalize): Response
+    public function toursbycity(int $id, 
+    // Request $request, 
+    TourRepository $tourRepository, 
+    CityRepository $cityRepository, 
+    TourNormalize $tourNormalize,
+    EntityManagerInterface $entityManager): Response
     {
         // $filters = $request->request; // Esto te da un array asaociativo con todos los parámetros que te llegan en el query string.
 
@@ -104,6 +109,11 @@ class ApiTourController extends AbstractController
         };
 
         $city = $cityRepository->find($id);
+        $currentRank = $city->getRanking();
+        $city->setRanking($currentRank + 1);
+        
+        $entityManager->persist($city);
+        $entityManager->flush();
 
         $results = [
             "totalTours" => count($tourRepository->findToursByCity($id)),
@@ -291,7 +301,6 @@ class ApiTourController extends AbstractController
     */
     public function deleteTour(
         int $id,
-        Booking $booking,
         TourRepository $tourRepository,
         BookingRepository $bookingRepository,
         EntityManagerInterface $entityManager 
