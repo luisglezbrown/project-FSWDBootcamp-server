@@ -94,6 +94,8 @@ class Tour
     {
         $this->categories = new ArrayCollection();
         $this->status = self::STATUS_ENABLED;
+        $this->ranking = 0;
+        $this->imgpath = 'tour-placeholder.jpg';
     }
 
     public function getId(): ?int
