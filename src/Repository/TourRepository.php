@@ -61,8 +61,23 @@ class TourRepository extends ServiceEntityRepository
 
     /**
      * @return Tour[]|null Returns an array of Tour objects
-     */
+    */
     public function findToursByGuide($id)
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.user = :id')
+            ->setParameter('id', $id)
+            ->orderBy('t.ranking', 'DESC')
+            ->orderBy('t.city', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Tour[]|null Returns an array of Tour objects
+    */
+    public function findActiveToursByGuide($id)
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.user = :id')
