@@ -115,15 +115,14 @@ class ApiUserController extends AbstractController
         $data = json_decode($request->getContent(), true);
         dump($data);
 
-//TODO GESTIONAR EL CAMBIO DE CONTRASEÑAS
         $userId = $this->getUser()->getId();
         $user = $userRepository->find($userId);
 
-        // $unhashedPassword = $data['password'];
-        // $hashedPassword = $hasher->hashPassword($unhashedPassword);
+        $unhashedPassword = $data['password'];
+        $hashedPassword = $hasher->hashPassword($unhashedPassword);
 
         $user->setEmail($data['email']);
-        // $user->setPassword($hashedPassword);
+        $user->setPassword($hashedPassword);
         $user->setName($data['name']);
         $user->setLastname($data['lastname']);
         $user->setPhone($data['phone']);
