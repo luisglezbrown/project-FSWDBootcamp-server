@@ -3,10 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-07-2021 a las 12:40:21
+-- Tiempo de generación: 21-07-2021 a las 12:43:14
 -- Versión del servidor: 10.4.18-MariaDB
 -- Versión de PHP: 8.0.5
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -20,21 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `localz`
 --
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `booking`
---
-
-CREATE TABLE `booking` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `tour_id` int(11) NOT NULL,
-  `date` date NOT NULL,
-  `pax` smallint(6) NOT NULL,
-  `status` varchar(9) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `booking`
@@ -78,17 +64,6 @@ INSERT INTO `booking` (`id`, `user_id`, `tour_id`, `date`, `pax`, `status`) VALU
 (60, 1582, 55, '2021-09-07', 2, 'active'),
 (61, 1579, 78, '2021-07-31', 1, 'active');
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `category`
---
-
-CREATE TABLE `category` (
-  `id` int(11) NOT NULL,
-  `tag` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 --
 -- Volcado de datos para la tabla `category`
 --
@@ -102,19 +77,6 @@ INSERT INTO `category` (`id`, `tag`) VALUES
 (6, 'Compras'),
 (7, 'Tradiciones'),
 (8, 'LGBTI+');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `city`
---
-
-CREATE TABLE `city` (
-  `id` int(11) NOT NULL,
-  `name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `imgpath` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ranking` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `city`
@@ -137,66 +99,6 @@ INSERT INTO `city` (`id`, `name`, `imgpath`, `ranking`) VALUES
 (14, 'San Francisco', 'card-14.png', 31),
 (15, 'Cartagena de Indias', 'card-15.png', 33),
 (16, 'Tokio', 'card-16.png', 30);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `doctrine_migration_versions`
---
-
-CREATE TABLE `doctrine_migration_versions` (
-  `version` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
-  `executed_at` datetime DEFAULT NULL,
-  `execution_time` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Volcado de datos para la tabla `doctrine_migration_versions`
---
-
-INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
-('DoctrineMigrations\\Version20210702101753', '2021-07-02 12:19:04', 243),
-('DoctrineMigrations\\Version20210702214816', '2021-07-02 23:49:11', 252),
-('DoctrineMigrations\\Version20210704101733', '2021-07-04 12:18:02', 445),
-('DoctrineMigrations\\Version20210704102523', '2021-07-04 12:25:45', 97),
-('DoctrineMigrations\\Version20210704102708', '2021-07-04 12:27:14', 53),
-('DoctrineMigrations\\Version20210704115913', '2021-07-04 13:59:21', 325),
-('DoctrineMigrations\\Version20210704181550', '2021-07-04 20:16:02', 216),
-('DoctrineMigrations\\Version20210704182400', '2021-07-04 20:26:05', 39),
-('DoctrineMigrations\\Version20210704182922', '2021-07-04 20:29:46', 110),
-('DoctrineMigrations\\Version20210706111619', '2021-07-06 13:17:29', 88),
-('DoctrineMigrations\\Version20210709112027', '2021-07-09 13:21:07', 291),
-('DoctrineMigrations\\Version20210709112331', '2021-07-09 13:23:41', 64),
-('DoctrineMigrations\\Version20210709112634', '2021-07-09 13:26:42', 225),
-('DoctrineMigrations\\Version20210713103036', '2021-07-13 12:31:04', 959),
-('DoctrineMigrations\\Version20210716072500', '2021-07-16 09:25:13', 235),
-('DoctrineMigrations\\Version20210716143546', '2021-07-16 16:36:17', 263),
-('DoctrineMigrations\\Version20210716144313', '2021-07-16 16:46:06', 96),
-('DoctrineMigrations\\Version20210716144328', '2021-07-16 16:46:06', 15),
-('DoctrineMigrations\\Version20210716144531', '2021-07-16 16:46:06', 11),
-('DoctrineMigrations\\Version20210716144600', '2021-07-16 16:46:06', 11);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tour`
---
-
-CREATE TABLE `tour` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `city_id` int(11) NOT NULL,
-  `title` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `duration` double NOT NULL,
-  `week_days` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:simple_array)',
-  `highlight` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `starting_time` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meeting_point` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `imgpath` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ranking` int(11) DEFAULT NULL,
-  `status` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `tour`
@@ -257,17 +159,6 @@ INSERT INTO `tour` (`id`, `user_id`, `city_id`, `title`, `duration`, `week_days`
 (84, 1580, 11, 'Reloj Astronómico: Icono de Praga', 1.5, '3,4,5', 'Admira las extraordinarias vistas desde la torre.', '12:00', 'Torre del Reloj Astronómico, Plaza de la Ciudad Vieja', 'Este tour guiado de 3 horas comienza delante de la torre del Reloj Astronómico, donde escucharás un breve repaso histórico sobre las ciudades vieja y nueva de Praga.\n\nDespués entrarás a la torre y subirás hasta arriba del todo, allí podrás disfrutar de las espectaculares vistas de Praga mientras tu guía te habla de los edificios y monumentos que se ven. \n\nTras la visita al Reloj, el guía te mostrará casas históricas, palacios, iglesias, teatros y mucho más. Verás los lugares donde grandes figuras como Carlos IV, Amadeus Mozart o Albert Einstein vivieron y trabajaron.\n\nVisita también la zona de la ciudad nueva y admira sitios donde sucedieron importantes eventos de la historia moderna de Praga.\n\nENTRADA NO INCLUIDA', '60f7d97331799.jpg', 0, 'enabled'),
 (85, 1580, 11, 'La ciudad vieja y el castillo', 3, '5,6,0', 'El Reloj Astronómico de la Plaza Vieja, el puente de Carlos, el castillo de Praga y la iglesia de San Nicolás son algunos de los', '12:00', 'delante del reloj astronómico de la plaza de la ciudad vieja', 'Observa el espectacular puente de Praga en un tour informativo que reconoce la necesidad de recorrer todo el paisaje y la historia de la antigua Praga y el castillo.\n\nEn este paseo guiado de 3 horas empezarás en el Reloj Astronómico de la Plaza Vieja y dirígete al puente de Carlos. Esucucha el contexto histórico con las leyendas del centro histórico.\n\nDespués, cruzarás el puente de Carlos y cogerás el tranvía hasta el castillo de Praga donde aprenderás sobre el desarrollo del puente de Carlos y el castillo de Praga.\n\nMientras te diriges hacia el castillo, pararás a admirar los sitios de Hradcany, el distrito del castillo, y conocerás su historia.\n\nEntra al castillo de Praga y disfruta de algunas historias finales de Praga acompañado de unas magníficas vistas de toda la ciudad de Praga.', '60f7d9d3462d9.jpg', 0, 'enabled'),
 (86, 1580, 11, 'Casco antiguo de Praga y barrio judío', 1.5, '3,4', 'Explora el casco antiguo de Praga, el barrio judío y sus sinagogas.', '16:00', 'Plaza de Jan Palach, Praga. En frente del Rudolfinum.', 'El tour guiado de 90 minutos comienza en la plaza Jan Palach, a orillas del río Vltava, frente al Rudolfinum. Desde allí te dirigirás al barrio judío, donde tu guía te contará sobre la historia de los judíos en Praga.\n\nUna vez tengas una idea general de la herencia judía de la ciudad, se te llevará por las sinagogas principales y el cementerio judío, donde Kafka escribió gran parte de sus obras.\n\nDespués, dirígete al casco antiguo de Praga y disfruta de los monumentos históricos, incluido el mundialmente famoso reloj astronómico.\n\nGracias a tu guía apasionado podrás aprender sobre historia local y mundial y el pasado judío de Praga. Disfruta de las explicaciones e historias que se esconden tras cada uno de los edificios más importantes.', '60f7da3ab5f7a.jpg', 0, 'enabled');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tour_category`
---
-
-CREATE TABLE `tour_category` (
-  `tour_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `tour_category`
@@ -363,26 +254,6 @@ INSERT INTO `tour_category` (`tour_id`, `category_id`) VALUES
 (85, 1),
 (86, 1);
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `user`
---
-
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
-  `email` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `lastname` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `imgpath` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `short_desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `since` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-  `roles` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:json)'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 --
 -- Volcado de datos para la tabla `user`
 --
@@ -413,119 +284,7 @@ INSERT INTO `user` (`id`, `email`, `password`, `name`, `lastname`, `phone`, `img
 (1580, 'klaraPRG@gmail.com', '$2y$13$SB.rkNPo2GMxlsk9H7.Fne8qmOVdK5qWVQxS0.shyvLXjHaIVA73K', 'Klara', 'Welsch', '+5456 45 21 5 4545', '60f7d7f1d4951.jpg', 'Somos un grupo de jóvenes guías checos que aman la historia y compartiremos nuestra propia admiración por Praga contigo en nuestros tours.', 'Hola, mi nombre es Klara y soy la fundadora de Prague Extravaganza Free Tours.', '2021-07-21 10:16:48', '[\"ROLE_GUIDE\"]'),
 (1581, 'raul@gmail.com', '$2y$13$Wl9TcEnONT3tLII9Imd3qO3.WCYvZTdbM/hpBtduXzyrVD3Ozgxc.', 'Raul', 'González Blanco', '652033144', NULL, '', '', '2021-07-20 23:33:09', '[\"ROLE_USER\"]'),
 (1582, 'blanca@gmail.com', '$2y$13$.Y6tP9WMikwSVhYQROU3V.h9jp.I9UUNVMxuv5IJMy6Uyn0pobdE6', 'Blanca', 'Suarez', '1234546546', NULL, '', '', '2021-07-21 12:37:03', '[\"ROLE_USER\"]');
-
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `booking`
---
-ALTER TABLE `booking`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_E00CEDDEA76ED395` (`user_id`),
-  ADD KEY `IDX_E00CEDDE15ED8D43` (`tour_id`);
-
---
--- Indices de la tabla `category`
---
-ALTER TABLE `category`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `city`
---
-ALTER TABLE `city`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `doctrine_migration_versions`
---
-ALTER TABLE `doctrine_migration_versions`
-  ADD PRIMARY KEY (`version`);
-
---
--- Indices de la tabla `tour`
---
-ALTER TABLE `tour`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `UNIQ_6AD1F9692B36786B` (`title`),
-  ADD KEY `IDX_6AD1F969A76ED395` (`user_id`),
-  ADD KEY `IDX_6AD1F9698BAC62AF` (`city_id`);
-
---
--- Indices de la tabla `tour_category`
---
-ALTER TABLE `tour_category`
-  ADD PRIMARY KEY (`tour_id`,`category_id`),
-  ADD KEY `IDX_9CB340F215ED8D43` (`tour_id`),
-  ADD KEY `IDX_9CB340F212469DE2` (`category_id`);
-
---
--- Indices de la tabla `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `UNIQ_8D93D649E7927C74` (`email`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `booking`
---
-ALTER TABLE `booking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
-
---
--- AUTO_INCREMENT de la tabla `category`
---
-ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT de la tabla `city`
---
-ALTER TABLE `city`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT de la tabla `tour`
---
-ALTER TABLE `tour`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
-
---
--- AUTO_INCREMENT de la tabla `user`
---
-ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1583;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `booking`
---
-ALTER TABLE `booking`
-  ADD CONSTRAINT `FK_E00CEDDE15ED8D43` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`id`),
-  ADD CONSTRAINT `FK_E00CEDDEA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-
---
--- Filtros para la tabla `tour`
---
-ALTER TABLE `tour`
-  ADD CONSTRAINT `FK_6AD1F9698BAC62AF` FOREIGN KEY (`city_id`) REFERENCES `city` (`id`),
-  ADD CONSTRAINT `FK_6AD1F969A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-
---
--- Filtros para la tabla `tour_category`
---
-ALTER TABLE `tour_category`
-  ADD CONSTRAINT `FK_9CB340F212469DE2` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_9CB340F215ED8D43` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`id`) ON DELETE CASCADE;
+SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

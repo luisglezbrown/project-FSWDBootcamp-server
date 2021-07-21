@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-07-2021 a las 12:40:21
+-- Tiempo de generación: 21-07-2021 a las 12:44:14
 -- Versión del servidor: 10.4.18-MariaDB
 -- Versión de PHP: 8.0.5
 
@@ -137,44 +137,6 @@ INSERT INTO `city` (`id`, `name`, `imgpath`, `ranking`) VALUES
 (14, 'San Francisco', 'card-14.png', 31),
 (15, 'Cartagena de Indias', 'card-15.png', 33),
 (16, 'Tokio', 'card-16.png', 30);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `doctrine_migration_versions`
---
-
-CREATE TABLE `doctrine_migration_versions` (
-  `version` varchar(191) COLLATE utf8_unicode_ci NOT NULL,
-  `executed_at` datetime DEFAULT NULL,
-  `execution_time` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Volcado de datos para la tabla `doctrine_migration_versions`
---
-
-INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
-('DoctrineMigrations\\Version20210702101753', '2021-07-02 12:19:04', 243),
-('DoctrineMigrations\\Version20210702214816', '2021-07-02 23:49:11', 252),
-('DoctrineMigrations\\Version20210704101733', '2021-07-04 12:18:02', 445),
-('DoctrineMigrations\\Version20210704102523', '2021-07-04 12:25:45', 97),
-('DoctrineMigrations\\Version20210704102708', '2021-07-04 12:27:14', 53),
-('DoctrineMigrations\\Version20210704115913', '2021-07-04 13:59:21', 325),
-('DoctrineMigrations\\Version20210704181550', '2021-07-04 20:16:02', 216),
-('DoctrineMigrations\\Version20210704182400', '2021-07-04 20:26:05', 39),
-('DoctrineMigrations\\Version20210704182922', '2021-07-04 20:29:46', 110),
-('DoctrineMigrations\\Version20210706111619', '2021-07-06 13:17:29', 88),
-('DoctrineMigrations\\Version20210709112027', '2021-07-09 13:21:07', 291),
-('DoctrineMigrations\\Version20210709112331', '2021-07-09 13:23:41', 64),
-('DoctrineMigrations\\Version20210709112634', '2021-07-09 13:26:42', 225),
-('DoctrineMigrations\\Version20210713103036', '2021-07-13 12:31:04', 959),
-('DoctrineMigrations\\Version20210716072500', '2021-07-16 09:25:13', 235),
-('DoctrineMigrations\\Version20210716143546', '2021-07-16 16:36:17', 263),
-('DoctrineMigrations\\Version20210716144313', '2021-07-16 16:46:06', 96),
-('DoctrineMigrations\\Version20210716144328', '2021-07-16 16:46:06', 15),
-('DoctrineMigrations\\Version20210716144531', '2021-07-16 16:46:06', 11),
-('DoctrineMigrations\\Version20210716144600', '2021-07-16 16:46:06', 11);
 
 -- --------------------------------------------------------
 
@@ -437,12 +399,6 @@ ALTER TABLE `category`
 --
 ALTER TABLE `city`
   ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `doctrine_migration_versions`
---
-ALTER TABLE `doctrine_migration_versions`
-  ADD PRIMARY KEY (`version`);
 
 --
 -- Indices de la tabla `tour`
